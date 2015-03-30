@@ -1,216 +1,162 @@
 package com.example.vaadindemo;
 
-import com.example.vaadindemo.domain.Person;
-import com.example.vaadindemo.service.PersonManager;
+import com.example.vaadindemo.model.MyValidator;
+import com.example.vaadindemo.model.Bike;
 import com.vaadin.annotations.Title;
-import com.vaadin.data.Property;
+import com.vaadin.ui.*;
 import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.data.validator.DoubleRangeValidator;
+import com.vaadin.data.validator.EmailValidator;
+import com.vaadin.data.validator.StringLengthValidator;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
 
-@Title("Vaadin Demo App")
+@Title("Aplikacja rowerowa")
 public class VaadinApp extends UI {
 
-	private static final long serialVersionUID = 1L;
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
 
-	private PersonManager personManager = new PersonManager();
+    protected void init(VaadinRequest request) {
+        VerticalLayout mainContainer = new VerticalLayout();
+// Table
+// ========================================================================
+        final BeanItemContainer<Bike> beanContainer = new BeanItemContainer<Bike>(
+                Bike.class);
+        beanContainer.addBean(new Bike("adam@gmail.com", "Kross", 1950, 17.5, 26));
+        beanContainer.addBean(new Bike("bartek@gmail.com", "Cube", 2500, 19, 27.5));
+        beanContainer.addBean(new Bike("kacper@gmail.com", "Giant", 2750, 20, 26));
+        final Table tabela = new Table();
+        tabela.setContainerDataSource(beanContainer);
+        tabela.setSelectable(true);
+        tabela.setImmediate(true);
+// ========================================================================
+// form
+// ========================================================================
+        Bike ktos = new Bike();
+        BeanItem<Bike> woot = new BeanItem<Bike>(ktos);
+        final FieldGroup fieldGroup = new FieldGroup();
+        fieldGroup.setBuffered(false);
+        fieldGroup.setItemDataSource(woot);
 
-	private Person person = new Person("Jasiu", 1967, "Kowalski");
-	private BeanItem<Person> personItem = new BeanItem<Person>(person);
+// ========================================================================
+// funkcje
+// ========================================================================
+        HorizontalLayout buttons = new HorizontalLayout();
+        final Button btnDodaj = new Button("Dodaj");
+        final Button btnUsun = new Button("Usuń");
+        final Button btnEdytuj = new Button("Edytuj");
+        buttons.addComponent(btnDodaj);
+        buttons.addComponent(btnEdytuj);
+        buttons.addComponent(btnUsun);
+// ========================================================================
+// Walidatory =============================================================
+        FormLayout formLayout = new FormLayout();
+        formLayout.setImmediate(true);
+        
+        Field<?> markaField = fieldGroup.buildAndBind("Marka", "marka");
+        markaField.addValidator(new MyValidator());
+        markaField.setRequired(true);
+        markaField.addValidator(new StringLengthValidator("Zła długośc", 3, 20, false));
 
-	private BeanItemContainer<Person> persons = new BeanItemContainer<Person>(
-			Person.class);
+        
+        Field<?> emailField = fieldGroup.buildAndBind("E-mail", "email");
+        emailField.setRequired(true);
+        emailField.addValidator(new EmailValidator("To nie jest E-mail"));
 
-	enum Action {
-		EDIT, ADD;
-	}
+     
+        Field<?> cenaField = fieldGroup.buildAndBind("Cena roweru", "cena");
+        cenaField.setRequired(true);
+        cenaField.addValidator(new DoubleRangeValidator("Nierealna cena roweru", 1.00, 10000.00));
+        
+        Field<?> rozmiarRamyField = fieldGroup.buildAndBind("Rozmiar ramy", "rozmiarRamy");
+        rozmiarRamyField.setRequired(true);
+        rozmiarRamyField.addValidator(new DoubleRangeValidator("Błędna wielkość ramy", 
+                15.00, 22.00));
+        
+        Field<?> rozmiarOponField = fieldGroup.buildAndBind("Rozmiar opon", "rozmiarOpon");
+        rozmiarOponField.setRequired(true);
+        rozmiarOponField.addValidator(new DoubleRangeValidator("Błędny rozmiar opon", 
+                26.00, 29.00));
 
-	private class MyFormWindow extends Window {
-		private static final long serialVersionUID = 1L;
+        formLayout.addComponent(markaField);
+        formLayout.addComponent(emailField);
+        formLayout.addComponent(cenaField);
+        formLayout.addComponent(rozmiarRamyField);
+        formLayout.addComponent(rozmiarOponField);
+// ========================================================================
+        mainContainer.addComponent(tabela);
+        mainContainer.addComponent(formLayout);
+        mainContainer.addComponent(buttons);
+        tabela.addValueChangeListener(new ValueChangeListener() {
+            /**
+             *
+             */
+            private static final long serialVersionUID = 1L;
 
-		private Action action;
+            @Override
+            public void valueChange(ValueChangeEvent event) {
+                if (tabela.getValue() != null) {
+                    Bike temp = (Bike) tabela.getValue();
+                    BeanItem<Bike> bike = new BeanItem<Bike>(temp);
+                    fieldGroup.setItemDataSource(bike);
+                }
+            }
+        });
+        btnDodaj.addClickListener(new ClickListener() {
+            /**
+             *
+             */
+            private static final long serialVersionUID = 1L;
 
-		public MyFormWindow(Action act) {
-			this.action = act;
+            @Override
+            public void buttonClick(ClickEvent event) {
+                Bike toot = ((BeanItem<Bike>) fieldGroup.getItemDataSource()).getBean();
+                beanContainer.addBean(new Bike(toot.getEmail(), toot.getMarka(), toot.getCena(),
+                        toot.getRozmiarRamy(), toot.getRozmiarOpon()));
+            }
+        });
+        btnUsun.addClickListener(new ClickListener() {
+            /**
+             *
+             */
+            private static final long serialVersionUID = 1L;
 
-			setModal(true);
-			center();
-			
-			switch (action) {
-			case ADD:
-				setCaption("Dodaj nową osobę");
-				break;
-			case EDIT:
-				setCaption("Edytuj osobę");
-				break;
-			default:
-				break;
-			}
-			
+            @Override
+            public void buttonClick(ClickEvent event) {
+                beanContainer.removeItem(tabela.getValue());
+            }
+        });
+        btnEdytuj.addClickListener(new ClickListener() {
+            /**
+             *
+             */
+            private static final long serialVersionUID = 1L;
 
-			final FormLayout form = new FormLayout();
-			final FieldGroup binder = new FieldGroup(personItem);
-
-			final Button saveBtn = new Button(" Dodaj osobę ");
-			final Button cancelBtn = new Button(" Anuluj ");
-
-			form.addComponent(binder.buildAndBind("Nazwisko", "lastName"));
-			form.addComponent(binder.buildAndBind("Rok urodzenia", "yob"));
-			form.addComponent(binder.buildAndBind("Imię", "firstName"));
-
-			binder.setBuffered(true);
-
-			binder.getField("lastName").setRequired(true);
-			binder.getField("firstName").setRequired(true);
-
-			VerticalLayout fvl = new VerticalLayout();
-			fvl.setMargin(true);
-			fvl.addComponent(form);
-
-			HorizontalLayout hl = new HorizontalLayout();
-			hl.addComponent(saveBtn);
-			hl.addComponent(cancelBtn);
-			fvl.addComponent(hl);
-
-			setContent(fvl);
-
-			saveBtn.addClickListener(new ClickListener() {
-
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public void buttonClick(ClickEvent event) {
-					try {
-						binder.commit();
-
-						if (action == Action.ADD) {
-							personManager.addPerson(person);
-						} else if (action == Action.EDIT) {
-							personManager.updatePerson(person);
-						}
-
-						persons.removeAllItems();
-						persons.addAll(personManager.findAll());
-						close();
-					} catch (CommitException e) {
-						e.printStackTrace();
-					}
-				}
-			});
-
-			cancelBtn.addClickListener(new ClickListener() {
-
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public void buttonClick(ClickEvent event) {
-					binder.discard();
-					close();
-				}
-			});
-		}
-	}
-
-	@Override
-	protected void init(VaadinRequest request) {
-
-		Button addPersonFormBtn = new Button("Add ");
-		Button deletePersonFormBtn = new Button("Delete");
-		Button editPersonFormBtn = new Button("Edit");
-
-		VerticalLayout vl = new VerticalLayout();
-		setContent(vl);
-
-		addPersonFormBtn.addClickListener(new ClickListener() {
-
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public void buttonClick(ClickEvent event) {
-				addWindow(new MyFormWindow(Action.ADD));
-			}
-		});
-
-		editPersonFormBtn.addClickListener(new ClickListener() {
-
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public void buttonClick(ClickEvent event) {
-				addWindow(new MyFormWindow(Action.EDIT));
-			}
-		});
-
-		deletePersonFormBtn.addClickListener(new ClickListener() {
-
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public void buttonClick(ClickEvent event) {
-				if (!person.getFirstName().isEmpty()) {
-					personManager.delete(person);
-					persons.removeAllItems();
-					persons.addAll(personManager.findAll());
-				}
-			}
-		});
-
-		HorizontalLayout hl = new HorizontalLayout();
-		hl.addComponent(addPersonFormBtn);
-		hl.addComponent(editPersonFormBtn);
-		hl.addComponent(deletePersonFormBtn);
-
-		final Table personsTable = new Table("Persons", persons);
-		personsTable.setColumnHeader("firstName", "Imię");
-		personsTable.setColumnHeader("lastName", "Nazwisko");
-		personsTable.setColumnHeader("yob", "Rok urodzenia");
-		personsTable.setSelectable(true);
-		personsTable.setImmediate(true);
-
-		personsTable.addValueChangeListener(new Property.ValueChangeListener() {
-
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public void valueChange(ValueChangeEvent event) {
-
-				Person selectedPerson = (Person) personsTable.getValue();
-				if (selectedPerson == null) {
-					person.setFirstName("");
-					person.setLastName("");
-					person.setYob(0);
-					person.setId(null);
-				} else {
-					person.setFirstName(selectedPerson.getFirstName());
-					person.setLastName(selectedPerson.getLastName());
-					person.setYob(selectedPerson.getYob());
-					person.setId(selectedPerson.getId());
-				}
-			}
-		});
-
-		vl.addComponent(hl);
-		vl.addComponent(personsTable);
-		
-		HorizontalLayout horizontalLayout = new HorizontalLayout();
-		Label label = new Label();
-		horizontalLayout.addComponent(label);
-		label.setValue(UI.getCurrent().toString());
-		
-		vl.addComponent(horizontalLayout);
-	}
-
+            @Override
+            public void buttonClick(ClickEvent event) {
+                try {
+                    fieldGroup.commit();
+                    tabela.refreshRowCache();
+                } catch (CommitException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        setContent(mainContainer);
+    }
 }
