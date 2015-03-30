@@ -28,39 +28,4 @@
 		<url-pattern>/VAADIN/*</url-pattern>
 	</servlet-mapping>
 
-	<servlet>
-		<servlet-name>VaadinPush</servlet-name>
-		<servlet-class>com.vaadin.server.VaadinServlet</servlet-class>
-		<init-param>
-			<description>Vaadin UI to display</description>
-			<param-name>UI</param-name>
-			<param-value>com.example.vaadindemo.PushApp</param-value>
-		</init-param>
-		<async-supported>true</async-supported>
-	</servlet>
-
-	<servlet-mapping>
-		<servlet-name>VaadinPush</servlet-name>
-		<url-pattern>/push/*</url-pattern>
-	</servlet-mapping>
-
-
-
-	<servlet>
-		<servlet-name>VaadinChat</servlet-name>
-		<servlet-class>com.vaadin.server.VaadinServlet</servlet-class>
-		<init-param>
-			<description>Vaadin UI to display</description>
-			<param-name>UI</param-name>
-			<param-value>com.example.vaadindemo.ChatApp</param-value>
-		</init-param>
-		<async-supported>true</async-supported>
-	</servlet>
-
-	<servlet-mapping>
-		<servlet-name>VaadinChat</servlet-name>
-		<url-pattern>/chat/*</url-pattern>
-	</servlet-mapping>
-
-
 </web-app>
