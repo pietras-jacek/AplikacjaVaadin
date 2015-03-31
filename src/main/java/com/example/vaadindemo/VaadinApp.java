@@ -33,7 +33,7 @@ public class VaadinApp extends UI {
 
     protected void init(VaadinRequest request) {
         VerticalLayout mainContainer = new VerticalLayout();
-// Table
+// Tabele
 // ========================================================================
         final BeanItemContainer<Bike> beanContainer = new BeanItemContainer<Bike>(
                 Bike.class);
@@ -54,7 +54,7 @@ public class VaadinApp extends UI {
         fieldGroup.setItemDataSource(woot);
 
 // ========================================================================
-// funkcje
+// Przyciski
 // ========================================================================
         HorizontalLayout buttons = new HorizontalLayout();
         final Button btnDodaj = new Button("Dodaj");
@@ -64,7 +64,8 @@ public class VaadinApp extends UI {
         buttons.addComponent(btnEdytuj);
         buttons.addComponent(btnUsun);
 // ========================================================================
-// Walidatory =============================================================
+// Walidatory 
+// ========================================================================
         FormLayout formLayout = new FormLayout();
         formLayout.setImmediate(true);
         
@@ -76,12 +77,12 @@ public class VaadinApp extends UI {
         
         Field<?> emailField = fieldGroup.buildAndBind("E-mail", "email");
         emailField.setRequired(true);
-        emailField.addValidator(new EmailValidator("To nie jest E-mail"));
+        emailField.addValidator(new EmailValidator("To nie jest właściwy adres E-mail"));
 
      
         Field<?> cenaField = fieldGroup.buildAndBind("Cena roweru", "cena");
         cenaField.setRequired(true);
-        cenaField.addValidator(new DoubleRangeValidator("Nierealna cena roweru", 1.00, 10000.00));
+        cenaField.addValidator(new DoubleRangeValidator("Błędna cena roweru", 1.00, 10000.00));
         
         Field<?> rozmiarRamyField = fieldGroup.buildAndBind("Rozmiar ramy", "rozmiarRamy");
         rozmiarRamyField.setRequired(true);
