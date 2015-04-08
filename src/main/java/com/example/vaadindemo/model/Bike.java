@@ -9,8 +9,8 @@ public class Bike {
     private double rozmiarOpon;
 
     public Bike() {
-        email = "";
-        marka = "";
+        email = "brak danych";
+        marka = "brak danych";
         cena = 0;
         rozmiarRamy = 0;
         rozmiarOpon = 0;

@@ -68,30 +68,27 @@ public class VaadinApp extends UI {
 // ========================================================================
         FormLayout formLayout = new FormLayout();
         formLayout.setImmediate(true);
-        
-        Field<?> markaField = fieldGroup.buildAndBind("Marka", "marka");
+
+        final Field<?> markaField = fieldGroup.buildAndBind("Marka", "marka");
         markaField.addValidator(new MyValidator());
         markaField.setRequired(true);
         markaField.addValidator(new StringLengthValidator("Zła długośc", 3, 20, false));
 
-        
-        Field<?> emailField = fieldGroup.buildAndBind("E-mail", "email");
+        final Field<?> emailField = fieldGroup.buildAndBind("E-mail", "email");
         emailField.setRequired(true);
         emailField.addValidator(new EmailValidator("To nie jest właściwy adres E-mail"));
 
-     
-        Field<?> cenaField = fieldGroup.buildAndBind("Cena roweru", "cena");
+        final Field<?> cenaField = fieldGroup.buildAndBind("Cena roweru", "cena");
         cenaField.setRequired(true);
         cenaField.addValidator(new DoubleRangeValidator("Błędna cena roweru", 1.00, 10000.00));
-        
-        Field<?> rozmiarRamyField = fieldGroup.buildAndBind("Rozmiar ramy", "rozmiarRamy");
+
+        final Field<?> rozmiarRamyField = fieldGroup.buildAndBind("Rozmiar ramy", "rozmiarRamy");
         rozmiarRamyField.setRequired(true);
-        rozmiarRamyField.addValidator(new DoubleRangeValidator("Błędna wielkość ramy", 
-                15.00, 22.00));
-        
-        Field<?> rozmiarOponField = fieldGroup.buildAndBind("Rozmiar opon", "rozmiarOpon");
+        rozmiarRamyField.addValidator(new DoubleRangeValidator("Błędny rozmiar ramy", 15.00, 23.00));
+
+        final Field<?> rozmiarOponField = fieldGroup.buildAndBind("Rozmiar opon", "rozmiarOpon");
         rozmiarOponField.setRequired(true);
-        rozmiarOponField.addValidator(new DoubleRangeValidator("Błędny rozmiar opon", 
+        rozmiarOponField.addValidator(new DoubleRangeValidator("Błędny rozmiar opon",
                 26.00, 29.00));
 
         formLayout.addComponent(markaField);
@@ -122,13 +119,20 @@ public class VaadinApp extends UI {
             /**
              *
              */
+
             private static final long serialVersionUID = 1L;
 
             @Override
             public void buttonClick(ClickEvent event) {
+
                 Bike toot = ((BeanItem<Bike>) fieldGroup.getItemDataSource()).getBean();
-                beanContainer.addBean(new Bike(toot.getEmail(), toot.getMarka(), toot.getCena(),
-                        toot.getRozmiarRamy(), toot.getRozmiarOpon()));
+                if (markaField.getValue() != "brak danych" && emailField.getValue() != "brak danych"
+                        && cenaField.getValue() != null && rozmiarRamyField.getValue() != null &&
+                        rozmiarOponField.getValue() != null) {
+  
+                    beanContainer.addBean(new Bike(toot.getEmail(), toot.getMarka(), toot.getCena(),
+                            toot.getRozmiarRamy(), toot.getRozmiarOpon()));
+                }
             }
         });
         btnUsun.addClickListener(new ClickListener() {
