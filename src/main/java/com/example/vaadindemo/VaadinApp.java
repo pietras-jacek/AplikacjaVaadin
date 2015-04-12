@@ -69,6 +69,7 @@ public class VaadinApp extends UI {
         FormLayout formLayout = new FormLayout();
         formLayout.setImmediate(true);
 
+        
         final Field<?> markaField = fieldGroup.buildAndBind("Marka", "marka");
         markaField.addValidator(new MyValidator());
         markaField.setRequired(true);
@@ -126,10 +127,15 @@ public class VaadinApp extends UI {
             public void buttonClick(ClickEvent event) {
 
                 Bike toot = ((BeanItem<Bike>) fieldGroup.getItemDataSource()).getBean();
+                /*
+                * Walidatory pól
+                */
                 if (markaField.getValue() != "brak danych" && emailField.getValue() != "brak danych"
                         && cenaField.getValue() != null && rozmiarRamyField.getValue() != null &&
-                        rozmiarOponField.getValue() != null) {
+                        rozmiarOponField.getValue()  != null) {
   
+                    
+                    
                     beanContainer.addBean(new Bike(toot.getEmail(), toot.getMarka(), toot.getCena(),
                             toot.getRozmiarRamy(), toot.getRozmiarOpon()));
                 }

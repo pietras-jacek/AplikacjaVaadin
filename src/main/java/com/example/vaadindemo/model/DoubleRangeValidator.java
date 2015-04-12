@@ -10,7 +10,7 @@ public class DoubleRangeValidator extends DoubleValidator implements Validator {
 
 	private double min = 15.00;
 	private double max = 23.00;
-	private String errorMessage;
+	private String errorMessage = "Błędna wartość";
 
 	public DoubleRangeValidator(double min, double max, String errorMessage) {
 		super(errorMessage);
@@ -31,7 +31,7 @@ public class DoubleRangeValidator extends DoubleValidator implements Validator {
 		if (!super.isValid(value))
 			return false;
 
-		Integer v = new Integer((String) value);
+		Double v = new Double((String) value);
 		if (v.doubleValue() < min || v.doubleValue() > max) {
 			return false;
 		}

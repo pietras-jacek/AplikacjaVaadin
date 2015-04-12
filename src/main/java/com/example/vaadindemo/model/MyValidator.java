@@ -9,7 +9,7 @@ public class MyValidator implements Validator {
 
     private static final long serialVersionUID = 1L;
 
-   private String errorMessage;
+   private String errorMessage = "Błędna wartość.";
 
 	public MyValidator(String errorMessage) {
 		this.errorMessage = errorMessage;
