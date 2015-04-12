@@ -1,4 +1,4 @@
-package com.example.vaadindemo.model;
+package com.example.vaadindemo.validator;
 
 import com.vaadin.data.Validator;
 import com.vaadin.data.validator.DoubleValidator;

@@ -1,6 +1,6 @@
 package com.example.vaadindemo;
 
-import com.example.vaadindemo.model.MyValidator;
+import com.example.vaadindemo.validator.CapitalLeterValidator;
 import com.example.vaadindemo.model.Bike;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Title;
@@ -75,7 +75,7 @@ public class VaadinApp extends UI {
 
         
         final Field<?> markaField = fieldGroup.buildAndBind("Marka", "marka");
-        markaField.addValidator(new MyValidator());
+        markaField.addValidator(new CapitalLeterValidator());
         markaField.setRequired(true);
         markaField.addValidator(new StringLengthValidator("Zła długośc", 3, 20, false));
 
@@ -134,9 +134,9 @@ public class VaadinApp extends UI {
                 /*
                 * Walidatory pól
                 */
-                if (markaField.getValue() != "brak danych" && emailField.getValue() != "brak danych"
-                        && cenaField.getValue() != null && rozmiarRamyField.getValue() != null &&
-                        rozmiarOponField.getValue()  != null) {
+                if (markaField.isValid() && emailField.isValid()
+                        && cenaField.isValid() && rozmiarRamyField.isValid() &&
+                        rozmiarOponField.isValid()) {
   
                     
                     

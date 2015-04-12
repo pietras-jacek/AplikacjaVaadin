@@ -1,17 +1,17 @@
-package com.example.vaadindemo.model;
+package com.example.vaadindemo.validator;
 
 import com.vaadin.data.Validator;
 
-public class MyValidator implements Validator {
+public class CapitalLeterValidator implements Validator {
 
-    public MyValidator() {
+    public CapitalLeterValidator() {
     }
 
     private static final long serialVersionUID = 1L;
 
    private String errorMessage = "Błędna wartość.";
 
-	public MyValidator(String errorMessage) {
+	public CapitalLeterValidator(String errorMessage) {
 		this.errorMessage = errorMessage;
 	}
 
