@@ -2,6 +2,7 @@ package com.example.vaadindemo;
 
 import com.example.vaadindemo.model.MyValidator;
 import com.example.vaadindemo.model.Bike;
+import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Title;
 import com.vaadin.ui.*;
 import com.vaadin.data.Property.ValueChangeEvent;
@@ -24,6 +25,7 @@ import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 
 @Title("Aplikacja rowerowa")
+@Theme("valo")
 public class VaadinApp extends UI {
 
     /**
@@ -31,6 +33,7 @@ public class VaadinApp extends UI {
      */
     private static final long serialVersionUID = 1L;
 
+    @Override
     protected void init(VaadinRequest request) {
         VerticalLayout mainContainer = new VerticalLayout();
 // Tabele
@@ -44,6 +47,7 @@ public class VaadinApp extends UI {
         tabela.setContainerDataSource(beanContainer);
         tabela.setSelectable(true);
         tabela.setImmediate(true);
+
 // ========================================================================
 // form
 // ========================================================================
