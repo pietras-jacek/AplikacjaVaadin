@@ -36,7 +36,7 @@ public class VaadinApp extends UI {
     @Override
     protected void init(VaadinRequest request) {
 
-        HorizontalLayout secondLayout = new HorizontalLayout();
+        final HorizontalLayout mainLayout = new HorizontalLayout();
 
 // ========================================================================
 // Tabele
@@ -63,9 +63,11 @@ public class VaadinApp extends UI {
 // ========================================================================
 // Walidatory 
 // ========================================================================
-        FormLayout formLayout = new FormLayout();
+        FormLayout tableLayout = new FormLayout();
 
-        formLayout.setImmediate(true);
+        tableLayout.setImmediate(true);
+        tableLayout.setSpacing(true);
+        tableLayout.setMargin(true);
 
         final Field<?> markaField = fieldGroup.buildAndBind("Marka", "marka");
         markaField.addValidator(new CapitalLeterValidator());
@@ -89,11 +91,11 @@ public class VaadinApp extends UI {
         rozmiarOponField.addValidator(new DoubleRangeValidator("Błędny rozmiar opon",
                 26.00, 29.00));
 
-        formLayout.addComponent(markaField);
-        formLayout.addComponent(emailField);
-        formLayout.addComponent(cenaField);
-        formLayout.addComponent(rozmiarRamyField);
-        formLayout.addComponent(rozmiarOponField);
+        tableLayout.addComponent(markaField);
+        tableLayout.addComponent(emailField);
+        tableLayout.addComponent(cenaField);
+        tableLayout.addComponent(rozmiarRamyField);
+        tableLayout.addComponent(rozmiarOponField);
 // ========================================================================
 // Przyciski
 // ========================================================================
@@ -109,10 +111,10 @@ public class VaadinApp extends UI {
 // ========================================================================
 // Layout
 // ========================================================================
-        secondLayout.addComponent(tabela);
-        secondLayout.addComponent(formLayout);
-        secondLayout.addComponent(buttons);
-        formLayout.addComponent(buttons);
+        mainLayout.addComponent(tabela);
+        mainLayout.addComponent(tableLayout);
+        mainLayout.addComponent(buttons);
+        tableLayout.addComponent(buttons);
 
         tabela.addValueChangeListener(new ValueChangeListener() {
             /**
@@ -126,7 +128,8 @@ public class VaadinApp extends UI {
                     Bike temp = (Bike) tabela.getValue();
                     BeanItem<Bike> bike = new BeanItem<Bike>(temp);
                     fieldGroup.setItemDataSource(bike);
-                }
+                    
+                }  
             }
         });
         btnDodaj.addClickListener(new ClickListener() {
@@ -149,6 +152,9 @@ public class VaadinApp extends UI {
 
                     beanContainer.addBean(new Bike(toot.getEmail(), toot.getMarka(), toot.getCena(),
                             toot.getRozmiarRamy(), toot.getRozmiarOpon()));
+                    Notification.show("Dodano nowy rower!");                }
+                else {
+                    Notification.show("Błąd. Popraw dane i spróbuj ponownie");
                 }
             }
         });
@@ -180,6 +186,6 @@ public class VaadinApp extends UI {
             }
         });
         //setContent(mainContainer);
-        setContent(secondLayout);
+        setContent(mainLayout);
     }
 }
