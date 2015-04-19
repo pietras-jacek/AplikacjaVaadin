@@ -35,7 +35,10 @@ public class VaadinApp extends UI {
 
     @Override
     protected void init(VaadinRequest request) {
-        VerticalLayout mainContainer = new VerticalLayout();
+
+        HorizontalLayout secondLayout = new HorizontalLayout();
+
+// ========================================================================
 // Tabele
 // ========================================================================
         final BeanItemContainer<Bike> beanContainer = new BeanItemContainer<Bike>(
@@ -51,29 +54,19 @@ public class VaadinApp extends UI {
 // ========================================================================
 // form
 // ========================================================================
-        Bike ktos = new Bike();
-        BeanItem<Bike> woot = new BeanItem<Bike>(ktos);
+        Bike rower = new Bike();
+        BeanItem<Bike> woot = new BeanItem<Bike>(rower);
         final FieldGroup fieldGroup = new FieldGroup();
         fieldGroup.setBuffered(false);
         fieldGroup.setItemDataSource(woot);
 
 // ========================================================================
-// Przyciski
-// ========================================================================
-        HorizontalLayout buttons = new HorizontalLayout();
-        final Button btnDodaj = new Button("Dodaj");
-        final Button btnUsun = new Button("Usuń");
-        final Button btnEdytuj = new Button("Edytuj");
-        buttons.addComponent(btnDodaj);
-        buttons.addComponent(btnEdytuj);
-        buttons.addComponent(btnUsun);
-// ========================================================================
 // Walidatory 
 // ========================================================================
         FormLayout formLayout = new FormLayout();
+
         formLayout.setImmediate(true);
 
-        
         final Field<?> markaField = fieldGroup.buildAndBind("Marka", "marka");
         markaField.addValidator(new CapitalLeterValidator());
         markaField.setRequired(true);
@@ -102,9 +95,25 @@ public class VaadinApp extends UI {
         formLayout.addComponent(rozmiarRamyField);
         formLayout.addComponent(rozmiarOponField);
 // ========================================================================
-        mainContainer.addComponent(tabela);
-        mainContainer.addComponent(formLayout);
-        mainContainer.addComponent(buttons);
+// Przyciski
+// ========================================================================
+
+        HorizontalLayout buttons = new HorizontalLayout();
+
+        final Button btnDodaj = new Button("Dodaj");
+        final Button btnUsun = new Button("Usuń");
+        final Button btnEdytuj = new Button("Edytuj");
+        buttons.addComponent(btnDodaj);
+        buttons.addComponent(btnEdytuj);
+        buttons.addComponent(btnUsun);
+// ========================================================================
+// Layout
+// ========================================================================
+        secondLayout.addComponent(tabela);
+        secondLayout.addComponent(formLayout);
+        secondLayout.addComponent(buttons);
+        formLayout.addComponent(buttons);
+
         tabela.addValueChangeListener(new ValueChangeListener() {
             /**
              *
@@ -132,14 +141,12 @@ public class VaadinApp extends UI {
 
                 Bike toot = ((BeanItem<Bike>) fieldGroup.getItemDataSource()).getBean();
                 /*
-                * Walidatory pól
-                */
+                 * Walidatory pól
+                 */
                 if (markaField.isValid() && emailField.isValid()
-                        && cenaField.isValid() && rozmiarRamyField.isValid() &&
-                        rozmiarOponField.isValid()) {
-  
-                    
-                    
+                        && cenaField.isValid() && rozmiarRamyField.isValid()
+                        && rozmiarOponField.isValid()) {
+
                     beanContainer.addBean(new Bike(toot.getEmail(), toot.getMarka(), toot.getCena(),
                             toot.getRozmiarRamy(), toot.getRozmiarOpon()));
                 }
@@ -172,6 +179,7 @@ public class VaadinApp extends UI {
                 }
             }
         });
-        setContent(mainContainer);
+        //setContent(mainContainer);
+        setContent(secondLayout);
     }
 }
